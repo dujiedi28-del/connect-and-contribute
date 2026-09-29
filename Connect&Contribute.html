@@ -1,802 +1,494 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Connect & Contribute - BAITIA Progress Tracker</title>
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Google Fonts & Font Awesome Icons -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    body { font-family: 'Inter', sans-serif; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BAITIA Student Database & Team Roster</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .tab-btn.active {
+            border-bottom-color: #3b82f6;
+            color: #2563eb;
+            font-weight: 600;
+        }
+    </style>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
 
-  <!-- TOP HEADER -->
-  <header class="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-30 shadow-md">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
-      
-      <!-- Brand & Title -->
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center font-bold text-lg text-white shadow">
-          <i class="fa-solid fa-handshake-angle"></i>
-        </div>
-        <div>
-          <h1 class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
-            CONNECT & CONTRIBUTE
-            <span class="text-xs font-semibold px-2.5 py-0.5 rounded bg-blue-500/20 text-blue-300 border border-blue-500/30">BAITIA</span>
-          </h1>
-          <p class="text-xs text-slate-400">10-Hour Monthly Student Service & Progress Dashboard</p>
-        </div>
-      </div>
-
-      <!-- Quick Metrics & Officer Action -->
-      <div class="flex items-center gap-3">
-        <button id="officerToggleBtn" onclick="toggleOfficerDrawer()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 shadow">
-          <i class="fa-solid fa-user-gear"></i>
-          <span>Coordinating Officer</span>
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <!-- MAIN CONTAINER -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
-
-    <!-- PROGRAM SUMMARY STATS -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-      <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-        <div class="p-3 bg-blue-50 text-blue-600 rounded-lg">
-          <i class="fa-solid fa-users text-xl"></i>
-        </div>
-        <div>
-          <p class="text-xs text-slate-500 font-medium">Total Scholars</p>
-          <h3 id="statTotalStudents" class="text-2xl font-bold text-slate-900">0</h3>
-        </div>
-      </div>
-
-      <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-        <div class="p-3 bg-emerald-50 text-emerald-600 rounded-lg">
-          <i class="fa-solid fa-circle-check text-xl"></i>
-        </div>
-        <div>
-          <p class="text-xs text-slate-500 font-medium">10h Goal Reached</p>
-          <h3 id="statGoalReached" class="text-2xl font-bold text-slate-900">0</h3>
-        </div>
-      </div>
-
-      <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-        <div class="p-3 bg-amber-50 text-amber-600 rounded-lg">
-          <i class="fa-solid fa-clock text-xl"></i>
-        </div>
-        <div>
-          <p class="text-xs text-slate-500 font-medium">Total Contributed Hours</p>
-          <h3 id="statTotalHours" class="text-2xl font-bold text-slate-900">0 / 0 hrs</h3>
-        </div>
-      </div>
-
-      <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-        <div class="p-3 bg-indigo-50 text-indigo-600 rounded-lg">
-          <i class="fa-solid fa-layer-group text-xl"></i>
-        </div>
-        <div>
-          <p class="text-xs text-slate-500 font-medium">Active Teams</p>
-          <h3 class="text-2xl font-bold text-slate-900">6 Teams</h3>
-        </div>
-      </div>
-    </div>
-
-    <!-- CONTROLS & SEARCH BAR -->
-    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm mb-6 flex flex-col md:flex-row gap-4 items-center justify-between">
-      <!-- Search Input -->
-      <div class="relative w-full md:w-80">
-        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-        <input type="text" id="searchInput" oninput="renderDashboard()" placeholder="Search student name or ID..." class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-      </div>
-
-      <!-- Filters -->
-      <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
-        <!-- Filter by Team -->
-        <select id="teamFilter" onchange="renderDashboard()" class="bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
-          <option value="ALL">All Teams</option>
-          <option value="Lab Team">Lab Team</option>
-          <option value="Events Team">Events Team</option>
-          <option value="Social Media Team">Social Media Team</option>
-          <option value="Media & Design Team">Media & Design Team</option>
-          <option value="Outreach Team">Outreach Team</option>
-          <option value="Support Team">Support Team</option>
-        </select>
-
-        <!-- Filter by Progress Status -->
-        <select id="statusFilter" onchange="renderDashboard()" class="bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
-          <option value="ALL">All Completion Status</option>
-          <option value="COMPLETED">Completed (10h+)</option>
-          <option value="IN_PROGRESS">In Progress (&lt;10h)</option>
-        </select>
-      </div>
-    </div>
-
-    <!-- STUDENT CARDS GRID -->
-    <div id="studentGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <!-- Cards rendered dynamically via JS -->
-    </div>
-
-  </main>
-
-  <!-- COORDINATING OFFICER DRAWER -->
-  <div id="officerDrawer" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-40 hidden flex justify-end transition-opacity">
-    <div class="bg-white w-full max-w-lg h-full shadow-2xl flex flex-col p-6 overflow-y-auto">
-      
-      <div class="flex justify-between items-center pb-4 border-b border-slate-200 mb-6">
-        <div>
-          <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
-            <i class="fa-solid fa-user-gear text-blue-600"></i> Officer Management
-          </h2>
-          <p class="text-xs text-slate-500">Add student progress, log hours, & assign teams</p>
-        </div>
-        <button onclick="toggleOfficerDrawer()" class="text-slate-400 hover:text-slate-600 text-lg p-2">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </div>
-
-      <!-- Form 1: Add New Hour Log -->
-      <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 mb-6">
-        <h3 class="text-sm font-semibold text-slate-800 mb-3 flex items-center gap-2">
-          <i class="fa-solid fa-plus-circle text-blue-600"></i> Log Student Hours
-        </h3>
-        <form id="logHoursForm" onsubmit="handleLogHours(event)" class="space-y-3">
-          
-          <!-- Logging Officer Name -->
-          <div>
-            <label class="block text-xs font-medium text-slate-600 mb-1">Coordinating Officer Name</label>
-            <input type="text" id="logOfficer" placeholder="e.g., Officer Chen / Officer Lin" required class="w-full bg-white border border-slate-200 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500">
-          </div>
-
-          <div>
-            <label class="block text-xs font-medium text-slate-600 mb-1">Select Student</label>
-            <select id="logStudentSelect" required class="w-full bg-white border border-slate-200 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500">
-              <!-- Options populated by JS -->
-            </select>
-          </div>
-
-          <div>
-            <label class="block text-xs font-medium text-slate-600 mb-1">Activity Title / Assignment</label>
-            <input type="text" id="logTitle" placeholder="e.g., Lab Duty (Morning Shift)" required class="w-full bg-white border border-slate-200 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500">
-          </div>
-
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="block text-xs font-medium text-slate-600 mb-1">Earned Under Team</label>
-              <select id="logTeamType" required class="w-full bg-white border border-slate-200 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500">
-                <option value="Primary">Primary Team</option>
-                <option value="Secondary">Secondary Team</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-xs font-medium text-slate-600 mb-1">Hours Earned</label>
-              <input type="number" id="logHours" min="0.5" step="0.5" max="10" placeholder="e.g., 3" required class="w-full bg-white border border-slate-200 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500">
-            </div>
-          </div>
-
-          <div>
-            <label class="block text-xs font-medium text-slate-600 mb-1">Date Completed</label>
-            <input type="date" id="logDate" required class="w-full bg-white border border-slate-200 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500">
-          </div>
-
-          <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-2 rounded-lg text-sm font-medium transition shadow">
-            Submit Hours
-          </button>
-        </form>
-      </div>
-
-      <!-- Form 2: Register New Student -->
-      <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 mb-6">
-        <h3 class="text-sm font-semibold text-slate-800 mb-3 flex items-center gap-2">
-          <i class="fa-solid fa-user-plus text-emerald-600"></i> Register New Student
-        </h3>
-        <form id="addStudentForm" onsubmit="handleAddStudent(event)" class="space-y-3">
-          <div>
-            <label class="block text-xs font-medium text-slate-600 mb-1">Full Name</label>
-            <input type="text" id="newStudentName" placeholder="e.g., Jane Doe" required class="w-full bg-white border border-slate-200 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500">
-          </div>
-
-          <div>
-            <label class="block text-xs font-medium text-slate-600 mb-1">Student ID</label>
-            <input type="text" id="newStudentID" placeholder="e.g., S113009" required class="w-full bg-white border border-slate-200 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500">
-          </div>
-
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="block text-xs font-medium text-slate-600 mb-1">Primary Team</label>
-              <select id="newStudentPrimary" required class="w-full bg-white border border-slate-200 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500">
-                <option value="Lab Team">Lab Team</option>
-                <option value="Events Team">Events Team</option>
-                <option value="Social Media Team">Social Media Team</option>
-                <option value="Media & Design Team">Media & Design Team</option>
-                <option value="Outreach Team">Outreach Team</option>
-                <option value="Support Team">Support Team</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-xs font-medium text-slate-600 mb-1">Secondary Team</label>
-              <select id="newStudentSecondary" required class="w-full bg-white border border-slate-200 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500">
-                <option value="Support Team">Support Team</option>
-                <option value="Lab Team">Lab Team</option>
-                <option value="Events Team">Events Team</option>
-                <option value="Social Media Team">Social Media Team</option>
-                <option value="Media & Design Team">Media & Design Team</option>
-                <option value="Outreach Team">Outreach Team</option>
-              </select>
-            </div>
-          </div>
-
-          <button type="submit" class="w-full bg-slate-800 hover:bg-slate-700 text-white py-2 rounded-lg text-sm font-medium transition">
-            Add Student
-          </button>
-        </form>
-      </div>
-
-      <!-- Reset Data Option -->
-      <div class="mt-auto pt-4 border-t border-slate-200 flex justify-between items-center">
-        <span class="text-xs text-slate-400">Data saved locally in browser</span>
-        <button onclick="resetToSampleData()" class="text-xs text-rose-500 hover:text-rose-700 underline font-medium">
-          Reset Demo Data
-        </button>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- EDIT STUDENT MODAL -->
-  <div id="editStudentModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-xl shadow-xl w-full max-w-md p-6 border border-slate-200">
-      <div class="flex justify-between items-center pb-3 border-b border-slate-200 mb-4">
-        <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
-          <i class="fa-solid fa-user-pen text-blue-600"></i> Edit Student Profile
-        </h3>
-        <button onclick="closeEditStudentModal()" class="text-slate-400 hover:text-slate-600">
-          <i class="fa-solid fa-xmark text-lg"></i>
-        </button>
-      </div>
-
-      <form id="editStudentForm" onsubmit="handleSaveStudentEdit(event)" class="space-y-4">
-        <input type="hidden" id="editStudentId">
-
-        <div>
-          <label class="block text-xs font-medium text-slate-600 mb-1">Student ID (Read-only)</label>
-          <input type="text" id="editStudentIDDisplay" disabled class="w-full bg-slate-100 text-slate-500 border border-slate-200 rounded-lg p-2 text-sm">
-        </div>
-
-        <div>
-          <label class="block text-xs font-medium text-slate-600 mb-1">Full Name</label>
-          <input type="text" id="editStudentName" required class="w-full bg-white border border-slate-200 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500">
-        </div>
-
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-medium text-slate-600 mb-1">Primary Team</label>
-            <select id="editStudentPrimary" required class="w-full bg-white border border-slate-200 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500">
-              <option value="Lab Team">Lab Team</option>
-              <option value="Events Team">Events Team</option>
-              <option value="Social Media Team">Social Media Team</option>
-              <option value="Media & Design Team">Media & Design Team</option>
-              <option value="Outreach Team">Outreach Team</option>
-              <option value="Support Team">Support Team</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-medium text-slate-600 mb-1">Secondary Team</label>
-            <select id="editStudentSecondary" required class="w-full bg-white border border-slate-200 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500">
-              <option value="Support Team">Support Team</option>
-              <option value="Lab Team">Lab Team</option>
-              <option value="Events Team">Events Team</option>
-              <option value="Social Media Team">Social Media Team</option>
-              <option value="Media & Design Team">Media & Design Team</option>
-              <option value="Outreach Team">Outreach Team</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="flex items-center justify-between pt-3 border-t border-slate-100">
-          <button type="button" onclick="handleDeleteStudent()" class="px-3 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 rounded-lg transition">
-            <i class="fa-solid fa-trash mr-1"></i> Delete Student
-          </button>
-          <div class="flex gap-2">
-            <button type="button" onclick="closeEditStudentModal()" class="px-4 py-2 text-xs font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition">Cancel</button>
-            <button type="submit" class="px-4 py-2 text-xs font-semibold bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition shadow">Save Changes</button>
-          </div>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- EDIT ACTIVITY LOG MODAL -->
-  <div id="editLogModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-xl shadow-xl w-full max-w-md p-6 border border-slate-200">
-      <div class="flex justify-between items-center pb-3 border-b border-slate-200 mb-4">
-        <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
-          <i class="fa-solid fa-pen-to-square text-blue-600"></i> Edit Logged Activity
-        </h3>
-        <button onclick="closeEditLogModal()" class="text-slate-400 hover:text-slate-600">
-          <i class="fa-solid fa-xmark text-lg"></i>
-        </button>
-      </div>
-
-      <form id="editLogForm" onsubmit="handleSaveLogEdit(event)" class="space-y-4">
-        <input type="hidden" id="editLogStudentId">
-        <input type="hidden" id="editLogId">
-
-        <div>
-          <label class="block text-xs font-medium text-slate-600 mb-1">Coordinating Officer Name</label>
-          <input type="text" id="editLogOfficer" required class="w-full bg-white border border-slate-200 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500">
-        </div>
-
-        <div>
-          <label class="block text-xs font-medium text-slate-600 mb-1">Activity Title / Assignment</label>
-          <input type="text" id="editLogTitle" required class="w-full bg-white border border-slate-200 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500">
-        </div>
-
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-medium text-slate-600 mb-1">Team Designation</label>
-            <select id="editLogTeamType" required class="w-full bg-white border border-slate-200 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500">
-              <option value="Primary">Primary Team</option>
-              <option value="Secondary">Secondary Team</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-medium text-slate-600 mb-1">Hours Earned</label>
-            <input type="number" id="editLogHours" min="0.5" step="0.5" max="10" required class="w-full bg-white border border-slate-200 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500">
-          </div>
-        </div>
-
-        <div>
-          <label class="block text-xs font-medium text-slate-600 mb-1">Date Completed</label>
-          <input type="date" id="editLogDate" required class="w-full bg-white border border-slate-200 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500">
-        </div>
-
-        <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
-          <button type="button" onclick="closeEditLogModal()" class="px-4 py-2 text-xs font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition">Cancel</button>
-          <button type="submit" class="px-4 py-2 text-xs font-semibold bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition shadow">Update Log</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- FOOTER -->
-  <footer class="bg-white border-t border-slate-200 py-6 mt-12">
-    <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500 space-y-1">
-      <p class="font-medium text-slate-700">BAITIA Connect & Contribute Program • National Chi Nan University</p>
-      <p>10 Hours / Semester Service Requirement for Scholarship Holders</p>
-    </div>
-  </footer>
-
-  <!-- APPLICATION LOGIC (JAVASCRIPT) -->
-  <script>
-    // Initial Sample Data Structure (Includes Officer attribution)
-    const INITIAL_STUDENTS = [
-      {
-        id: "S113001",
-        name: "Alex Lin",
-        primaryTeam: "Lab Team",
-        secondaryTeam: "Support Team",
-        logs: [
-          { id: 101, title: "Lab Duty (Morning Shift)", type: "Primary", team: "Lab Team", hours: 3, date: "2026-03-02", officer: "Officer Chen" },
-          { id: 102, title: "Welcome Party Setup", type: "Secondary", team: "Support Team", hours: 2, date: "2026-03-10", officer: "Officer Wang" },
-          { id: 103, title: "Lab Duty (Afternoon Shift)", type: "Primary", team: "Lab Team", hours: 3, date: "2026-03-18", officer: "Officer Chen" },
-          { id: 104, title: "Seminar Support", type: "Secondary", team: "Support Team", hours: 2, date: "2026-03-24", officer: "Officer Lee" }
-        ]
-      },
-      {
-        id: "S113002",
-        name: "Chen Wei-Ting",
-        primaryTeam: "Media & Design Team",
-        secondaryTeam: "Social Media Team",
-        logs: [
-          { id: 201, title: "Event Poster Graphic Design", type: "Primary", team: "Media & Design Team", hours: 4, date: "2026-03-05", officer: "Officer Lin" },
-          { id: 202, title: "Social Media Campaign Post", type: "Secondary", team: "Social Media Team", hours: 3, date: "2026-03-12", officer: "Officer Wang" }
-        ]
-      },
-      {
-        id: "S113003",
-        name: "Sarah Johnson",
-        primaryTeam: "Events Team",
-        secondaryTeam: "Support Team",
-        logs: [
-          { id: 301, title: "Orientation Workshop Planning", type: "Primary", team: "Events Team", hours: 4, date: "2026-03-08", officer: "Officer Chen" },
-          { id: 302, title: "Welcome Party On-Site Execution", type: "Primary", team: "Events Team", hours: 4, date: "2026-03-15", officer: "Officer Chen" },
-          { id: 303, title: "Post-Event Cleanup", type: "Secondary", team: "Support Team", hours: 2, date: "2026-03-15", officer: "Officer Lee" }
-        ]
-      },
-      {
-        id: "S113004",
-        name: "David Zhang",
-        primaryTeam: "Outreach Team",
-        secondaryTeam: "Lab Team",
-        logs: [
-          { id: 401, title: "Alumni Contact Outreach", type: "Primary", team: "Outreach Team", hours: 3, date: "2026-03-11", officer: "Officer Lin" }
-        ]
-      }
-    ];
-
-    // Load state from LocalStorage or fallback to sample
-    let students = JSON.parse(localStorage.getItem('baitia_students')) || INITIAL_STUDENTS;
-
-    function saveState() {
-      localStorage.setItem('baitia_students', JSON.stringify(students));
-    }
-
-    function resetToSampleData() {
-      if (confirm("Reset application data back to default sample students?")) {
-        students = JSON.parse(JSON.stringify(INITIAL_STUDENTS));
-        saveState();
-        renderDashboard();
-        populateStudentSelect();
-      }
-    }
-
-    // Main Render Function
-    function renderDashboard() {
-      const search = document.getElementById('searchInput').value.toLowerCase();
-      const selectedTeam = document.getElementById('teamFilter').value;
-      const selectedStatus = document.getElementById('statusFilter').value;
-
-      const grid = document.getElementById('studentGrid');
-      grid.innerHTML = '';
-
-      let totalStudentsCount = students.length;
-      let goalReachedCount = 0;
-      let aggregateHours = 0;
-      let aggregateTargetHours = totalStudentsCount * 10;
-
-      // Filter students
-      const filtered = students.filter(s => {
-        const totalHours = s.logs.reduce((sum, log) => sum + log.hours, 0);
-        
-        const matchesSearch = s.name.toLowerCase().includes(search) || s.id.toLowerCase().includes(search);
-        
-        const matchesTeam = selectedTeam === 'ALL' || 
-          s.primaryTeam === selectedTeam || 
-          s.secondaryTeam === selectedTeam;
-
-        const matchesStatus = selectedStatus === 'ALL' || 
-          (selectedStatus === 'COMPLETED' && totalHours >= 10) ||
-          (selectedStatus === 'IN_PROGRESS' && totalHours < 10);
-
-        return matchesSearch && matchesTeam && matchesStatus;
-      });
-
-      // Calculate totals
-      students.forEach(s => {
-        const totalHours = s.logs.reduce((sum, log) => sum + log.hours, 0);
-        if (totalHours >= 10) goalReachedCount++;
-        aggregateHours += totalHours;
-      });
-
-      document.getElementById('statTotalStudents').innerText = totalStudentsCount;
-      document.getElementById('statGoalReached').innerText = `${goalReachedCount} / ${totalStudentsCount}`;
-      document.getElementById('statTotalHours').innerText = `${aggregateHours} / ${aggregateTargetHours} hrs`;
-
-      if (filtered.length === 0) {
-        grid.innerHTML = `
-          <div class="col-span-full py-12 text-center text-slate-400 bg-white rounded-xl border border-slate-200">
-            <i class="fa-solid fa-folder-open text-3xl mb-2"></i>
-            <p class="text-sm">No student records found matching the active filters.</p>
-          </div>
-        `;
-        return;
-      }
-
-      // Render Student Cards
-      filtered.forEach(student => {
-        const primaryHours = student.logs
-          .filter(l => l.type === 'Primary')
-          .reduce((sum, l) => sum + l.hours, 0);
-
-        const secondaryHours = student.logs
-          .filter(l => l.type === 'Secondary')
-          .reduce((sum, l) => sum + l.hours, 0);
-
-        const totalHours = primaryHours + secondaryHours;
-        const progressPct = Math.min(Math.round((totalHours / 10) * 100), 100);
-        const isComplete = totalHours >= 10;
-
-        const card = document.createElement('div');
-        card.className = "bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition flex flex-col overflow-hidden";
-
-        card.innerHTML = `
-          <div class="p-5 border-b border-slate-100 flex-grow">
-            <!-- Card Header: Student Info & Edit Button -->
-            <div class="flex justify-between items-start mb-3">
-              <div>
-                <h3 class="font-bold text-slate-900 text-base flex items-center gap-2">
-                  ${student.name}
-                  <button onclick="openEditStudentModal('${student.id}')" title="Edit Student Profile" class="text-slate-400 hover:text-blue-600 transition text-xs">
-                    <i class="fa-solid fa-pen-to-square"></i>
-                  </button>
-                </h3>
-                <span class="text-xs text-slate-400 font-mono">${student.id}</span>
-              </div>
-              ${isComplete ? 
-                `<span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold flex items-center gap-1"><i class="fa-solid fa-check"></i> 10h Completed</span>` : 
-                `<span class="px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-semibold">${10 - totalHours}h Remaining</span>`
-              }
-            </div>
-
-            <!-- Teams -->
-            <div class="flex flex-wrap gap-2 mb-4">
-              <span class="text-xs px-2.5 py-1 rounded-md bg-blue-50 text-blue-700 font-medium border border-blue-100" title="Primary Team">
-                <i class="fa-solid fa-star text-blue-500 mr-1"></i> ${student.primaryTeam}
-              </span>
-              <span class="text-xs px-2.5 py-1 rounded-md bg-slate-100 text-slate-600 font-medium border border-slate-200" title="Secondary Team">
-                <i class="fa-solid fa-rotate text-slate-400 mr-1"></i> ${student.secondaryTeam}
-              </span>
-            </div>
-
-            <!-- Progress Bar -->
-            <div class="space-y-1.5 mb-4">
-              <div class="flex justify-between text-xs font-semibold">
-                <span class="text-slate-600">Progress (${totalHours} / 10 Hours)</span>
-                <span class="${isComplete ? 'text-emerald-600' : 'text-blue-600'}">${progressPct}%</span>
-              </div>
-              <div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden flex">
-                <div style="width: ${progressPct}%" class="h-full ${isComplete ? 'bg-emerald-500' : 'bg-blue-600'} transition-all duration-500"></div>
-              </div>
-            </div>
-
-            <!-- Hours Split Breakdown -->
-            <div class="grid grid-cols-2 gap-2 text-center text-xs bg-slate-50 p-2.5 rounded-lg border border-slate-100 mb-2">
-              <div>
-                <span class="text-slate-400 block text-[10px] uppercase font-semibold">Primary Team</span>
-                <span class="font-bold text-slate-800">${primaryHours} hrs</span>
-              </div>
-              <div>
-                <span class="text-slate-400 block text-[10px] uppercase font-semibold">Secondary Team</span>
-                <span class="font-bold text-slate-800">${secondaryHours} hrs</span>
-              </div>
-            </div>
-
-            <!-- Activity Logs Accordion with Coordinating Officer Attribution -->
-            <details class="group mt-3 text-xs">
-              <summary class="cursor-pointer font-medium text-blue-600 hover:text-blue-800 flex items-center justify-between py-1">
-                <span>View Activity Logs (${student.logs.length})</span>
-                <i class="fa-solid fa-chevron-down transition-transform group-open:rotate-180"></i>
-              </summary>
-              <div class="mt-2 pt-2 border-t border-slate-100 space-y-2 max-h-52 overflow-y-auto pr-1">
-                ${student.logs.length === 0 ? '<p class="text-slate-400 italic">No hours logged yet.</p>' : ''}
-                ${student.logs.map(log => `
-                  <div class="flex justify-between items-start bg-slate-50 p-2.5 rounded border border-slate-100 group/log">
-                    <div class="flex-grow pr-2">
-                      <p class="font-semibold text-slate-800">${log.title}</p>
-                      <div class="flex flex-wrap items-center gap-1.5 mt-0.5">
-                        <span class="text-[10px] text-slate-400">${log.date} • ${log.team} (${log.type})</span>
-                        <span class="text-[10px] text-blue-600 bg-blue-50 border border-blue-100 px-1.5 rounded font-medium" title="Logged by Coordinating Officer">
-                          <i class="fa-solid fa-user-check text-[9px] mr-0.5"></i> ${log.officer || 'Officer'}
-                        </span>
-                      </div>
+    <!-- Header Navigation -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-blue-600 text-white p-2.5 rounded-xl shadow-md shadow-blue-500/20">
+                        <i class="fa-solid me-1 fa-database text-lg"></i>
                     </div>
-                    <div class="flex items-center gap-2">
-                      <span class="font-bold text-slate-700 bg-white px-2 py-0.5 rounded border border-slate-200 text-xs">+${log.hours}h</span>
-                      <button onclick="openEditLogModal('${student.id}',${log.id})" title="Edit Log" class="text-slate-400 hover:text-blue-600 text-xs">
-                        <i class="fa-solid fa-pen"></i>
-                      </button>
-                      <button onclick="handleDeleteLog('${student.id}',${log.id})" title="Delete Log" class="text-slate-400 hover:text-rose-600 text-xs">
-                        <i class="fa-solid fa-trash"></i>
-                      </button>
+                    <div>
+                        <h1 class="text-xl font-bold text-slate-900 leading-tight">BAITIA Connect</h1>
+                        <p class="text-xs text-slate-500 font-medium">Student Management & Team Database</p>
                     </div>
-                  </div>
-                `).join('')}
-              </div>
-            </details>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">
+                        <span class="w-2 h-2 mr-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                        26 Verified Students
+                    </span>
+                    <button onclick="exportToCSV()" class="bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold px-4 py-2 rounded-lg transition duration-150 flex items-center shadow-sm">
+                        <i class="fa-solid fa-download mr-2"></i> Export CSV
+                    </button>
+                </div>
+            </div>
+            <!-- Navigation Tabs -->
+            <nav class="flex space-x-8 border-t border-slate-100 -mb-px" id="tabNav">
+                <button onclick="switchTab('roster')" id="tab-roster" class="tab-btn active py-3 text-sm border-b-2 border-transparent font-medium text-slate-600 hover:text-slate-900 flex items-center">
+                    <i class="fa-solid fa-users mr-2"></i> Master Roster
+                </button>
+                <button onclick="switchTab('analytics')" id="tab-analytics" class="tab-btn py-3 text-sm border-b-2 border-transparent font-medium text-slate-600 hover:text-slate-900 flex items-center">
+                    <i class="fa-solid fa-chart-pie mr-2"></i> Team Breakdown
+                </button>
+                <button onclick="switchTab('sql')" id="tab-sql" class="tab-btn py-3 text-sm border-b-2 border-transparent font-medium text-slate-600 hover:text-slate-900 flex items-center">
+                    <i class="fa-solid fa-code mr-2"></i> SQL & JSON Data
+                </button>
+            </nav>
+        </div>
+    </header>
 
-          </div>
-        `;
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-        grid.appendChild(card);
-      });
-    }
+        <!-- TAB 1: MASTER ROSTER -->
+        <section id="view-roster" class="space-y-6">
+            <!-- Controls & Filters -->
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="md:col-span-2 relative">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-400 text-sm"></i>
+                    <input type="text" id="searchInput" oninput="filterData()" placeholder="Search by Student ID or Name..." class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition">
+                </div>
+                <div>
+                    <select id="primaryFilter" onchange="filterData()" class="w-full py-2 px-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white text-slate-700 font-medium">
+                        <option value="">All Primary Teams</option>
+                        <option value="Creative & Poster Team">Creative & Poster Team</option>
+                        <option value="Events & Program Support Team">Events & Program Support Team</option>
+                        <option value="Lab & Operations Team">Lab & Operations Team</option>
+                        <option value="Media & Video Team">Media & Video Team</option>
+                        <option value="Social Media Team">Social Media Team</option>
+                        <option value="Website & Information Team">Website & Information Team</option>
+                    </select>
+                </div>
+                <div>
+                    <select id="secondaryFilter" onchange="filterData()" class="w-full py-2 px-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white text-slate-700 font-medium">
+                        <option value="">All Secondary Teams</option>
+                        <option value="Creative & Poster Team">Creative & Poster Team</option>
+                        <option value="Events & Program Support Team">Events & Program Support Team</option>
+                        <option value="Lab & Operations Team">Lab & Operations Team</option>
+                        <option value="Media & Video Team">Media & Video Team</option>
+                        <option value="Social Media Team">Social Media Team</option>
+                        <option value="Website & Information Team">Website & Information Team</option>
+                    </select>
+                </div>
+            </div>
 
-    // --- STUDENT EDIT / DELETE LOGIC ---
-    function openEditStudentModal(studentId) {
-      const student = students.find(s => s.id === studentId);
-      if (!student) return;
+            <!-- Table View -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100/70 border-b border-slate-200 text-xs font-bold text-slate-600 uppercase tracking-wider">
+                                <th class="py-3.5 px-4 cursor-pointer hover:bg-slate-200/50 transition" onclick="sortTable('id')">
+                                    Student ID <i class="fa-solid fa-sort ml-1 text-slate-400"></i>
+                                </th>
+                                <th class="py-3.5 px-4 cursor-pointer hover:bg-slate-200/50 transition" onclick="sortTable('name')">
+                                    Full Name <i class="fa-solid fa-sort ml-1 text-slate-400"></i>
+                                </th>
+                                <th class="py-3.5 px-4">Batch</th>
+                                <th class="py-3.5 px-4 cursor-pointer hover:bg-slate-200/50 transition" onclick="sortTable('primaryTeam')">
+                                    Primary Team <i class="fa-solid fa-sort ml-1 text-slate-400"></i>
+                                </th>
+                                <th class="py-3.5 px-4 cursor-pointer hover:bg-slate-200/50 transition" onclick="sortTable('secondaryTeam')">
+                                    Secondary Team <i class="fa-solid fa-sort ml-1 text-slate-400"></i>
+                                </th>
+                                <th class="py-3.5 px-4 text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentTableBody" class="divide-y divide-slate-100 text-sm">
+                            <!-- Dynamic Content -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="p-4 border-t border-slate-100 text-xs text-slate-500 flex justify-between items-center bg-slate-50/50">
+                    <span id="recordCount">Showing 26 of 26 Students</span>
+                    <span>BAITIA Connect Master Roster</span>
+                </div>
+            </div>
+        </section>
 
-      document.getElementById('editStudentId').value = student.id;
-      document.getElementById('editStudentIDDisplay').value = student.id;
-      document.getElementById('editStudentName').value = student.name;
-      document.getElementById('editStudentPrimary').value = student.primaryTeam;
-      document.getElementById('editStudentSecondary').value = student.secondaryTeam;
+        <!-- TAB 2: TEAM BREAKDOWN & CAPACITY -->
+        <section id="view-analytics" class="space-y-6 hidden">
+            <!-- Summary Stats -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center space-x-4">
+                    <div class="p-3 bg-blue-100 text-blue-600 rounded-xl">
+                        <i class="fa-solid fa-user-graduate text-2xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Enrolled</p>
+                        <h3 class="text-2xl font-bold text-slate-900">26 Students</h3>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center space-x-4">
+                    <div class="p-3 bg-indigo-100 text-indigo-600 rounded-xl">
+                        <i class="fa-solid fa-sitemap text-2xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Functional Teams</p>
+                        <h3 class="text-2xl font-bold text-slate-900">6 Specialized Teams</h3>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center space-x-4">
+                    <div class="p-3 bg-emerald-100 text-emerald-600 rounded-xl">
+                        <i class="fa-solid fa-layer-group text-2xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Team Roles</p>
+                        <h3 class="text-2xl font-bold text-slate-900">52 Assignments</h3>
+                    </div>
+                </div>
+            </div>
 
-      document.getElementById('editStudentModal').classList.remove('hidden');
-    }
+            <!-- Grouped Cards -->
+            <div id="teamCardsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Dynamically Populated -->
+            </div>
+        </section>
 
-    function closeEditStudentModal() {
-      document.getElementById('editStudentModal').classList.add('hidden');
-    }
+        <!-- TAB 3: SQL & JSON EXPORT -->
+        <section id="view-sql" class="space-y-6 hidden">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-900">Relational Database SQL Script</h2>
+                        <p class="text-xs text-slate-500">Ready-to-execute schema creation & dataset seeding.</p>
+                    </div>
+                    <button onclick="copyToClipboard('sqlCodeBlock')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold px-3 py-2 rounded-lg transition flex items-center">
+                        <i class="fa-solid fa-copy mr-1.5"></i> Copy SQL
+                    </button>
+                </div>
+                <pre class="bg-slate-900 text-slate-100 p-4 rounded-xl text-xs overflow-x-auto font-mono max-h-80"><code id="sqlCodeBlock">-- BAITIA Database Schema Setup
+CREATE TABLE IF NOT EXISTS Students (
+    student_id VARCHAR(20) PRIMARY KEY,
+    full_name VARCHAR(100) NOT NULL,
+    entry_batch VARCHAR(20),
+    primary_team VARCHAR(100) NOT NULL,
+    secondary_team VARCHAR(100) NOT NULL
+);
 
-    function handleSaveStudentEdit(e) {
-      e.preventDefault();
-      const id = document.getElementById('editStudentId').value;
-      const name = document.getElementById('editStudentName').value;
-      const primary = document.getElementById('editStudentPrimary').value;
-      const secondary = document.getElementById('editStudentSecondary').value;
+-- Seed Data
+INSERT INTO Students (student_id, full_name, entry_batch, primary_team, secondary_team) VALUES
+('114265527', 'Gcebile Kunene', '114-2', 'Media & Video Team', 'Events & Program Support Team'),
+('114265526', 'Nokuthula Mamba', '114-2', 'Lab & Operations Team', 'Events & Program Support Team'),
+('115265514', 'Sara McShea', '115-1', 'Website & Information Team', 'Events & Program Support Team'),
+('115265550', 'Prasannaraj Yougank Jain', '115-1', 'Events & Program Support Team', 'Website & Information Team'),
+('115265535', 'Mayank Mitruka V', '115-1', 'Lab & Operations Team', 'Website & Information Team'),
+('115265537', 'Faizan Firoz', '115-1', 'Social Media Team', 'Lab & Operations Team'),
+('114265521', 'Si Thu Hlaing', '114-2', 'Lab & Operations Team', 'Creative & Poster Team'),
+('115265513', 'Damian Wasita', '115-1', 'Media & Video Team', 'Events & Program Support Team'),
+('115265508', 'Nicole Chua', '115-1', 'Events & Program Support Team', 'Social Media Team'),
+('115265551', 'Jay Laurence Marasigan', '115-1', 'Events & Program Support Team', 'Lab & Operations Team'),
+('115265529', 'Tri Nguyen', '115-1', 'Lab & Operations Team', 'Social Media Team'),
+('114265538', 'THAO TRAN', '114-2', 'Lab & Operations Team', 'Lab & Operations Team'),
+('115265544', 'Nga Do', '115-1', 'Lab & Operations Team', 'Lab & Operations Team'),
+('115265538', 'Thi Bich Cham Nghiem', '115-1', 'Lab & Operations Team', 'Lab & Operations Team'),
+('115265525', 'Desy Sulistianingsih', '115-1', 'Events & Program Support Team', 'Social Media Team'),
+('115265511', 'Veronica Sonia', '115-1', 'Events & Program Support Team', 'Social Media Team'),
+('115265519', 'Chindy Amanda Awal', '115-1', 'Events & Program Support Team', 'Lab & Operations Team'),
+('114265520', 'Phyu Lae Ko Ko', '114-2', 'Events & Program Support Team', 'Lab & Operations Team'),
+('115265555', 'Fanelesiyibonge Mabuza', '115-1', 'Website & Information Team', 'Social Media Team'),
+('115265557', 'Jaja Abdul Azis', '115-1', 'Events & Program Support Team', 'Lab & Operations Team'),
+('115265521', 'Ha Giang Duong', '115-1', 'Social Media Team', 'Website & Information Team'),
+('115265517', 'Thi Anh Ngoc Trinh', '115-1', 'Social Media Team', 'Media & Video Team'),
+('114265529', 'Varshitha Gowda', '114-2', 'Creative & Poster Team', 'Social Media Team'),
+('115265536', 'Chau Anh Huy', '115-1', 'Creative & Poster Team', 'Events & Program Support Team'),
+('115265530', 'Yazhini Yoganathan', '115-1', 'Social Media Team', 'Creative & Poster Team'),
+('115265567', 'Neeraj Katariya', '115-1', 'Website & Information Team', 'Creative & Poster Team');</code></pre>
+            </div>
 
-      const student = students.find(s => s.id === id);
-      if (student) {
-        student.name = name;
-        student.primaryTeam = primary;
-        student.secondaryTeam = secondary;
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-900">Structured JSON Data</h2>
+                        <p class="text-xs text-slate-500">Lightweight JSON array for REST API integration.</p>
+                    </div>
+                    <button onclick="copyToClipboard('jsonCodeBlock')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold px-3 py-2 rounded-lg transition flex items-center">
+                        <i class="fa-solid fa-copy mr-1.5"></i> Copy JSON
+                    </button>
+                </div>
+                <pre class="bg-slate-900 text-slate-100 p-4 rounded-xl text-xs overflow-x-auto font-mono max-h-80"><code id="jsonCodeBlock"></code></pre>
+            </div>
+        </section>
 
-        student.logs.forEach(log => {
-          log.team = log.type === 'Primary' ? primary : secondary;
-        });
+    </main>
 
-        saveState();
-        renderDashboard();
-        populateStudentSelect();
-        closeEditStudentModal();
-      }
-    }
+    <!-- Modal for Detail View -->
+    <div id="studentModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-2xl max-w-lg w-full mx-4 shadow-2xl border border-slate-100 overflow-hidden">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-start bg-slate-50/50">
+                <div>
+                    <span id="modalBatch" class="text-xs font-semibold px-2.5 py-0.5 rounded-md bg-blue-100 text-blue-800">Batch</span>
+                    <h3 id="modalName" class="text-xl font-bold text-slate-900 mt-1">Student Name</h3>
+                    <p id="modalID" class="text-xs text-slate-500 font-mono">ID: 000000</p>
+                </div>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 text-lg p-1">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="p-6 space-y-4 text-sm">
+                <div>
+                    <label class="text-xs font-semibold text-slate-400 uppercase">Team Allocations</label>
+                    <div class="mt-2 grid grid-cols-2 gap-3">
+                        <div class="p-3 rounded-xl bg-blue-50 border border-blue-100">
+                            <span class="text-xs font-semibold text-blue-600 block">Primary Team</span>
+                            <span id="modalPrimary" class="font-bold text-slate-800 text-xs mt-0.5 block"></span>
+                        </div>
+                        <div class="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                            <span class="text-xs font-semibold text-slate-500 block">Secondary Team</span>
+                            <span id="modalSecondary" class="font-bold text-slate-800 text-xs mt-0.5 block"></span>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <label class="text-xs font-semibold text-slate-400 uppercase">Skills / Interests</label>
+                    <p id="modalSkills" class="text-slate-700 bg-slate-50 p-3 rounded-xl mt-1 text-xs border border-slate-100"></p>
+                </div>
+                <div>
+                    <label class="text-xs font-semibold text-slate-400 uppercase">Lab Duty Availability</label>
+                    <p id="modalLabPref" class="text-slate-700 bg-slate-50 p-3 rounded-xl mt-1 text-xs border border-slate-100"></p>
+                </div>
+            </div>
+            <div class="p-4 bg-slate-50 border-t border-slate-100 flex justify-end">
+                <button onclick="closeModal()" class="bg-slate-900 text-white text-xs font-semibold px-4 py-2 rounded-xl hover:bg-slate-800 transition">Close</button>
+            </div>
+        </div>
+    </div>
 
-    function handleDeleteStudent() {
-      const id = document.getElementById('editStudentId').value;
-      const student = students.find(s => s.id === id);
+    <!-- JavaScript Data & Interactivity -->
+    <script>
+        const studentData = [
+            {"id": "114265527", "name": "Gcebile Kunene", "batch": "114-2", "primaryTeam": "Media & Video Team", "secondaryTeam": "Events & Program Support Team", "skills": "Photography, Videography, Social Media, Writing / Copywriting", "labPref": "Monday Afternoon, Tuesday Afternoon, Wednesday Morning, Thursday Morning, Friday Morning"},
+            {"id": "114265526", "name": "Nokuthula Mamba", "batch": "114-2", "primaryTeam": "Lab & Operations Team", "secondaryTeam": "Events & Program Support Team", "skills": "Writing / Copywriting", "labPref": "Friday Morning"},
+            {"id": "115265514", "name": "Sara McShea", "batch": "115-1", "primaryTeam": "Website & Information Team", "secondaryTeam": "Events & Program Support Team", "skills": "Graphic Design, Website", "labPref": "Not available for regular Lab Duty"},
+            {"id": "115265550", "name": "Prasannaraj Yougank Jain", "batch": "115-1", "primaryTeam": "Events & Program Support Team", "secondaryTeam": "Website & Information Team", "skills": "Writing / Copywriting, Event Organization", "labPref": "Tuesday Morning, Tuesday Afternoon, Wednesday Morning"},
+            {"id": "115265535", "name": "Mayank Mitruka V", "batch": "115-1", "primaryTeam": "Lab & Operations Team", "secondaryTeam": "Website & Information Team", "skills": "Social Media, Event Organization", "labPref": "Monday Afternoon, Tuesday Morning"},
+            {"id": "115265537", "name": "Faizan Firoz", "batch": "115-1", "primaryTeam": "Social Media Team", "secondaryTeam": "Lab & Operations Team", "skills": "Photography, Videography, Video Editing, Social Media", "labPref": "Monday Afternoon, Tuesday Morning"},
+            {"id": "114265521", "name": "Si Thu Hlaing", "batch": "114-2", "primaryTeam": "Lab & Operations Team", "secondaryTeam": "Creative & Poster Team", "skills": "Graphic Design, Photography, Videography, Video Editing, Event Organization", "labPref": "Tuesday Afternoon, Wednesday Morning, Thursday Morning, Friday Afternoon"},
+            {"id": "115265513", "name": "Damian Wasita", "batch": "115-1", "primaryTeam": "Media & Video Team", "secondaryTeam": "Events & Program Support Team", "skills": "Social Media, Writing / Copywriting, Event Organization", "labPref": "Monday Afternoon, Wednesday Morning, Wednesday Afternoon, Thursday Morning, Friday Morning, Friday Afternoon"},
+            {"id": "115265508", "name": "Nicole Chua", "batch": "115-1", "primaryTeam": "Events & Program Support Team", "secondaryTeam": "Social Media Team", "skills": "Photography, Videography, Event Organization", "labPref": "Not available for regular Lab Duty"},
+            {"id": "115265551", "name": "Jay Laurence Marasigan", "batch": "115-1", "primaryTeam": "Events & Program Support Team", "secondaryTeam": "Lab & Operations Team", "skills": "Photography, Social Media, Event Organization", "labPref": "Wednesday Afternoon"},
+            {"id": "115265529", "name": "Tri Nguyen", "batch": "115-1", "primaryTeam": "Lab & Operations Team", "secondaryTeam": "Social Media Team", "skills": "Writing / Copywriting, Event Organization", "labPref": "Wednesday Morning, Wednesday Afternoon, Friday Afternoon"},
+            {"id": "114265538", "name": "THAO TRAN", "batch": "114-2", "primaryTeam": "Lab & Operations Team", "secondaryTeam": "Lab & Operations Team", "skills": "Writing / Copywriting", "labPref": "Tuesday Morning, Thursday Morning"},
+            {"id": "115265544", "name": "Nga Do", "batch": "115-1", "primaryTeam": "Lab & Operations Team", "secondaryTeam": "Lab & Operations Team", "skills": "Social Media, Event Organization", "labPref": "Thursday Morning, Thursday Afternoon, Friday Morning, Friday Afternoon"},
+            {"id": "115265538", "name": "Thi Bich Cham Nghiem", "batch": "115-1", "primaryTeam": "Lab & Operations Team", "secondaryTeam": "Lab & Operations Team", "skills": "Event Organization", "labPref": "Monday Afternoon, Tuesday Afternoon"},
+            {"id": "115265525", "name": "Desy Sulistianingsih", "batch": "115-1", "primaryTeam": "Events & Program Support Team", "secondaryTeam": "Social Media Team", "skills": "Writing / Copywriting, Event Organization", "labPref": "Monday Afternoon, Tuesday Morning, Wednesday Afternoon, Friday Morning"},
+            {"id": "115265511", "name": "Veronica Sonia", "batch": "115-1", "primaryTeam": "Events & Program Support Team", "secondaryTeam": "Social Media Team", "skills": "Writing / Copywriting, Event Organization", "labPref": "Monday Morning, Tuesday Morning, Wednesday Morning"},
+            {"id": "115265519", "name": "Chindy Amanda Awal", "batch": "115-1", "primaryTeam": "Events & Program Support Team", "secondaryTeam": "Lab & Operations Team", "skills": "Social Media, Event Organization", "labPref": "Wednesday Morning, Wednesday Afternoon, Thursday Morning, Thursday Afternoon"},
+            {"id": "114265520", "name": "Phyu Lae Ko Ko", "batch": "114-2", "primaryTeam": "Events & Program Support Team", "secondaryTeam": "Lab & Operations Team", "skills": "Writing / Copywriting, Event Organization", "labPref": "Tuesday Afternoon, Wednesday Morning, Wednesday Afternoon"},
+            {"id": "115265555", "name": "Fanelesiyibonge Mabuza", "batch": "115-1", "primaryTeam": "Website & Information Team", "secondaryTeam": "Social Media Team", "skills": "Graphic Design, Social Media, Website", "labPref": "Monday Morning, Tuesday Afternoon"},
+            {"id": "115265557", "name": "Jaja Abdul Azis", "batch": "115-1", "primaryTeam": "Events & Program Support Team", "secondaryTeam": "Lab & Operations Team", "skills": "Social Media, Event Organization", "labPref": "Monday Morning, Tuesday Morning, Wednesday Morning"},
+            {"id": "115265521", "name": "Ha Giang Duong", "batch": "115-1", "primaryTeam": "Social Media Team", "secondaryTeam": "Website & Information Team", "skills": "Graphic Design, Social Media, Writing / Copywriting", "labPref": "Monday Morning, Tuesday Morning, Wednesday Morning"},
+            {"id": "115265517", "name": "Thi Anh Ngoc Trinh", "batch": "115-1", "primaryTeam": "Social Media Team", "secondaryTeam": "Media & Video Team", "skills": "Graphic Design, Photography, Videography, Social Media", "labPref": "Monday Morning, Tuesday Morning, Wednesday Morning"},
+            {"id": "114265529", "name": "Varshitha Gowda", "batch": "114-2", "primaryTeam": "Creative & Poster Team", "secondaryTeam": "Social Media Team", "skills": "Graphic Design, Photography", "labPref": "Thursday Morning, Friday Morning"},
+            {"id": "115265536", "name": "Chau Anh Huy", "batch": "115-1", "primaryTeam": "Creative & Poster Team", "secondaryTeam": "Events & Program Support Team", "skills": "Graphic Design, Photography", "labPref": "Monday Morning, Wednesday Morning"},
+            {"id": "115265530", "name": "Yazhini Yoganathan", "batch": "115-1", "primaryTeam": "Social Media Team", "secondaryTeam": "Creative & Poster Team", "skills": "Graphic Design, Social Media", "labPref": "Tuesday Afternoon, Thursday Morning"},
+            {"id": "115265567", "name": "Neeraj Katariya", "batch": "115-1", "primaryTeam": "Website & Information Team", "secondaryTeam": "Creative & Poster Team", "skills": "Graphic Design, Website, Event Organization", "labPref": "Monday Afternoon, Tuesday Morning"}
+        ];
 
-      if (student && confirm(`Are you sure you want to remove student "${student.name}" (${student.id})?`)) {
-        students = students.filter(s => s.id !== id);
-        saveState();
-        renderDashboard();
-        populateStudentSelect();
-        closeEditStudentModal();
-      }
-    }
+        let currentData = [...studentData];
+        let sortDirection = 1;
 
-    // --- ACTIVITY LOG EDIT / DELETE LOGIC ---
-    function openEditLogModal(studentId, logId) {
-      const student = students.find(s => s.id === studentId);
-      if (!student) return;
+        // Populate JSON Code view
+        document.getElementById('jsonCodeBlock').textContent = JSON.stringify(studentData, null, 2);
 
-      const log = student.logs.find(l => l.id === logId);
-      if (!log) return;
-
-      document.getElementById('editLogStudentId').value = studentId;
-      document.getElementById('editLogId').value = logId;
-      document.getElementById('editLogOfficer').value = log.officer || 'Officer';
-      document.getElementById('editLogTitle').value = log.title;
-      document.getElementById('editLogTeamType').value = log.type;
-      document.getElementById('editLogHours').value = log.hours;
-      document.getElementById('editLogDate').value = log.date;
-
-      document.getElementById('editLogModal').classList.remove('hidden');
-    }
-
-    function closeEditLogModal() {
-      document.getElementById('editLogModal').classList.add('hidden');
-    }
-
-    function handleSaveLogEdit(e) {
-      e.preventDefault();
-      const studentId = document.getElementById('editLogStudentId').value;
-      const logId = parseInt(document.getElementById('editLogId').value);
-      const officer = document.getElementById('editLogOfficer').value;
-      const title = document.getElementById('editLogTitle').value;
-      const type = document.getElementById('editLogTeamType').value;
-      const hours = parseFloat(document.getElementById('editLogHours').value);
-      const date = document.getElementById('editLogDate').value;
-
-      const student = students.find(s => s.id === studentId);
-      if (student) {
-        const log = student.logs.find(l => l.id === logId);
-        if (log) {
-          log.officer = officer;
-          log.title = title;
-          log.type = type;
-          log.team = type === 'Primary' ? student.primaryTeam : student.secondaryTeam;
-          log.hours = hours;
-          log.date = date;
-
-          saveState();
-          renderDashboard();
-          closeEditLogModal();
+        // Badge styling helper
+        function getBadge(team, type) {
+            const colors = {
+                'Creative & Poster Team': 'bg-purple-100 text-purple-800 border-purple-200',
+                'Events & Program Support Team': 'bg-amber-100 text-amber-800 border-amber-200',
+                'Lab & Operations Team': 'bg-emerald-100 text-emerald-800 border-emerald-200',
+                'Media & Video Team': 'bg-rose-100 text-rose-800 border-rose-200',
+                'Social Media Team': 'bg-sky-100 text-sky-800 border-sky-200',
+                'Website & Information Team': 'bg-indigo-100 text-indigo-800 border-indigo-200'
+            };
+            const style = colors[team] || 'bg-slate-100 text-slate-800 border-slate-200';
+            return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${style}">${team}</span>`;
         }
-      }
-    }
 
-    function handleDeleteLog(studentId, logId) {
-      const student = students.find(s => s.id === studentId);
-      if (student && confirm("Delete this logged activity entry?")) {
-        student.logs = student.logs.filter(l => l.id !== logId);
-        saveState();
-        renderDashboard();
-      }
-    }
+        // Render Master Table
+        function renderTable(data) {
+            const tbody = document.getElementById('studentTableBody');
+            tbody.innerHTML = '';
 
-    // --- OFFICER DRAWER & INITIAL LOGIC ---
-    function toggleOfficerDrawer() {
-      const drawer = document.getElementById('officerDrawer');
-      drawer.classList.toggle('hidden');
-      if (!drawer.classList.contains('hidden')) {
-        populateStudentSelect();
-        document.getElementById('logDate').value = new Date().toISOString().split('T')[0];
-      }
-    }
+            data.forEach(s => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-50/80 transition';
+                tr.innerHTML = `
+                    <td class="py-3 px-4 font-mono font-semibold text-slate-700">${s.id}</td>
+                    <td class="py-3 px-4 font-semibold text-slate-900">${s.name}</td>
+                    <td class="py-3 px-4"><span class="text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded-md font-medium">${s.batch}</span></td>
+                    <td class="py-3 px-4">${getBadge(s.primaryTeam, 'primary')}</td>
+                    <td class="py-3 px-4">${getBadge(s.secondaryTeam, 'secondary')}</td>
+                    <td class="py-3 px-4 text-center">
+                        <button onclick="openModal('${s.id}')" class="text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-3 py-1 rounded-lg text-xs font-semibold transition">
+                            View
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
 
-    function populateStudentSelect() {
-      const select = document.getElementById('logStudentSelect');
-      select.innerHTML = '';
-      students.forEach(s => {
-        const option = document.createElement('option');
-        option.value = s.id;
-        option.innerText = `${s.name} (${s.id}) - [${s.primaryTeam}]`;
-        select.appendChild(option);
-      });
-    }
+            document.getElementById('recordCount').textContent = `Showing ${data.length} of ${studentData.length} Students`;
+        }
 
-    function handleLogHours(e) {
-      e.preventDefault();
-      const officer = document.getElementById('logOfficer').value;
-      const studentId = document.getElementById('logStudentSelect').value;
-      const title = document.getElementById('logTitle').value;
-      const type = document.getElementById('logTeamType').value;
-      const hours = parseFloat(document.getElementById('logHours').value);
-      const date = document.getElementById('logDate').value;
+        // Render Team Breakdown Cards
+        function renderTeamCards() {
+            const container = document.getElementById('teamCardsContainer');
+            container.innerHTML = '';
 
-      const student = students.find(s => s.id === studentId);
-      if (student) {
-        const targetTeam = type === 'Primary' ? student.primaryTeam : student.secondaryTeam;
-        
-        student.logs.push({
-          id: Date.now(),
-          title: title,
-          type: type,
-          team: targetTeam,
-          hours: hours,
-          date: date,
-          officer: officer
-        });
+            const teams = [
+                'Creative & Poster Team',
+                'Events & Program Support Team',
+                'Lab & Operations Team',
+                'Media & Video Team',
+                'Social Media Team',
+                'Website & Information Team'
+            ];
 
-        saveState();
-        renderDashboard();
-        alert(`Logged ${hours} hour(s) for ${student.name} under ${officer}!`);
-        document.getElementById('logHoursForm').reset();
-        document.getElementById('logDate').value = new Date().toISOString().split('T')[0];
-      }
-    }
+            teams.forEach(team => {
+                const primaryMembers = studentData.filter(s => s.primaryTeam === team);
+                const secondaryMembers = studentData.filter(s => s.secondaryTeam === team);
 
-    function handleAddStudent(e) {
-      e.preventDefault();
-      const name = document.getElementById('newStudentName').value;
-      const id = document.getElementById('newStudentID').value;
-      const primary = document.getElementById('newStudentPrimary').value;
-      const secondary = document.getElementById('newStudentSecondary').value;
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-4';
+                
+                card.innerHTML = `
+                    <div class="flex justify-between items-start border-b border-slate-100 pb-3">
+                        <div>
+                            <h3 class="font-bold text-slate-900">${team}</h3>
+                            <p class="text-xs text-slate-500">${primaryMembers.length} Primary Leads • ${secondaryMembers.length} Support</p>
+                        </div>
+                        <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-slate-100 text-slate-700">${primaryMembers.length + secondaryMembers.length} Total</span>
+                    </div>
 
-      if (students.some(s => s.id === id)) {
-        alert("A student with this ID already exists!");
-        return;
-      }
+                    <div>
+                        <span class="text-xs font-semibold uppercase text-blue-600 tracking-wider block mb-2">Primary Leads (${primaryMembers.length})</span>
+                        <ul class="space-y-1.5 text-xs text-slate-700">
+                            ${primaryMembers.map(m => `<li class="flex justify-between bg-slate-50 p-2 rounded-lg"><span class="font-medium">${m.name}</span><span class="font-mono text-slate-400">${m.id}</span></li>`).join('')}
+                        </ul>
+                    </div>
 
-      students.push({
-        id: id,
-        name: name,
-        primaryTeam: primary,
-        secondaryTeam: secondary,
-        logs: []
-      });
+                    <div>
+                        <span class="text-xs font-semibold uppercase text-slate-400 tracking-wider block mb-2">Secondary Support (${secondaryMembers.length})</span>
+                        <ul class="space-y-1.5 text-xs text-slate-600">
+                            ${secondaryMembers.length ? secondaryMembers.map(m => `<li class="flex justify-between bg-slate-50/60 p-2 rounded-lg"><span>${m.name}</span><span class="font-mono text-slate-400">${m.id}</span></li>`).join('') : '<li class="text-slate-400 text-xs italic">No secondary members assigned</li>'}
+                        </ul>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
 
-      saveState();
-      renderDashboard();
-      populateStudentSelect();
-      alert(`Student ${name} registered successfully!`);
-      document.getElementById('addStudentForm').reset();
-    }
+        // Filter Logic
+        function filterData() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const primary = document.getElementById('primaryFilter').value;
+            const secondary = document.getElementById('secondaryFilter').value;
 
-    // Initial Load
-    document.addEventListener('DOMContentLoaded', () => {
-      renderDashboard();
-    });
-  </script>
+            currentData = studentData.filter(s => {
+                const matchesSearch = s.name.toLowerCase().includes(search) || s.id.includes(search);
+                const matchesPrimary = primary === '' || s.primaryTeam === primary;
+                const matchesSecondary = secondary === '' || s.secondaryTeam === secondary;
+                return matchesSearch && matchesPrimary && matchesSecondary;
+            });
+
+            renderTable(currentData);
+        }
+
+        // Sorting Logic
+        function sortTable(key) {
+            sortDirection *= -1;
+            currentData.sort((a, b) => {
+                if (a[key] < b[key]) return -1 * sortDirection;
+                if (a[key] > b[key]) return 1 * sortDirection;
+                return 0;
+            });
+            renderTable(currentData);
+        }
+
+        // Tab Switching Logic
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`tab-${tab}`).classList.add('active');
+
+            document.getElementById('view-roster').classList.add('hidden');
+            document.getElementById('view-analytics').classList.add('hidden');
+            document.getElementById('view-sql').classList.add('hidden');
+
+            document.getElementById(`view-${tab}`).classList.remove('hidden');
+        }
+
+        // Modal Logic
+        function openModal(id) {
+            const s = studentData.find(item => item.id === id);
+            if (!s) return;
+
+            document.getElementById('modalName').textContent = s.name;
+            document.getElementById('modalID').textContent = `Student ID: ${s.id}`;
+            document.getElementById('modalBatch').textContent = `Batch ${s.batch}`;
+            document.getElementById('modalPrimary').textContent = s.primaryTeam;
+            document.getElementById('modalSecondary').textContent = s.secondaryTeam;
+            document.getElementById('modalSkills').textContent = s.skills || 'None listed';
+            document.getElementById('modalLabPref').textContent = s.labPref || 'None listed';
+
+            document.getElementById('studentModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('studentModal').classList.add('hidden');
+        }
+
+        // Export to CSV
+        function exportToCSV() {
+            let csv = 'Student ID,Full Name,Batch,Primary Team,Secondary Team,Skills,Lab Preference\n';
+            studentData.forEach(s => {
+                csv += `"${s.id}","${s.name}","${s.batch}","${s.primaryTeam}","${s.secondaryTeam}","${s.skills.replace(/"/g, '""')}","${s.labPref.replace(/"/g, '""')}"\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.setAttribute('download', 'BAITIA_Student_Database.csv');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Copy Helper
+        function copyToClipboard(elementId) {
+            const text = document.getElementById(elementId).textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Copied to clipboard successfully!');
+            });
+        }
+
+        // Initial Load
+        window.onload = () => {
+            renderTable(studentData);
+            renderTeamCards();
+        };
+    </script>
 </body>
 </html>
