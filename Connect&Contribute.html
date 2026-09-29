@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connect & Contribute - BAITIA Progress Tracker</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts & Font Awesome Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+  <!-- TOP HEADER -->
+  <header class="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-30 shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+      
+      <!-- Brand & Title -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center font-bold text-lg text-white shadow">
+          <i class="fa-solid fa-handshake-angle"></i>
+        </div>
+        <div>
+          <h1 class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+            CONNECT & CONTRIBUTE
+            <span class="text-xs font-semibold px-2.5 py-0.5 rounded bg-blue-500/20 text-blue-300 border border-blue-500/30">BAITIA</span>
+          </h1>
+          <p class="text-xs text-slate-400">10-Hour Monthly Student Service & Progress Dashboard</p>
+        </div>
+      </div>
+
+      <!-- Quick Metrics & Officer Action -->
+      <div class="flex items-center gap-3">
+        <button id="officerToggleBtn" onclick="toggleOfficerDrawer()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 shadow">
+          <i class="fa-solid fa-user-gear"></i>
+          <span>Coordinating Officer</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
+
+    <!-- PROGRAM SUMMARY STATS -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+      <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
+        <div class="p-3 bg-blue-50 text-blue-600 rounded-lg">
+          <i class="fa-solid fa-users text-xl"></i>
+        </div>
+        <div>
+          <p class="text-xs text-slate-500 font-medium">Total Scholars</p>
+          <h3 id="statTotalStudents" class="text-2xl font-bold text-slate-900">0</h3>
+        </div>
+      </div>
+
+      <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
+        <div class="p-3 bg-emerald-50 text-emerald-600 rounded-lg">
+          <i class="fa-solid fa-circle-check text-xl"></i>
+        </div>
+        <div>
+          <p class="text-xs text-slate-500 font-medium">10h Goal Reached</p>
+          <h3 id="statGoalReached" class="text-2xl font-bold text-slate-900">0</h3>
+        </div>
+      </div>
+
+      <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
+        <div class="p-3 bg-amber-50 text-amber-600 rounded-lg">
+          <i class="fa-solid fa-clock text-xl"></i>
+        </div>
+        <div>
+          <p class="text-xs text-slate-500 font-medium">Total Contributed Hours</p>
+          <h3 id="statTotalHours" class="text-2xl font-bold text-slate-900">0 / 0 hrs</h3>
+        </div>
+      </div>
+
+      <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
+        <div class="p-3 bg-indigo-50 text-indigo-600 rounded-lg">
+          <i class="fa-solid fa-layer-group text-xl"></i>
+        </div>
+        <div>
+          <p class="text-xs text-slate-500 font-medium">Active Teams</p>
+          <h3 class="text-2xl font-bold text-slate-900">6 Teams</h3>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTROLS & SEARCH BAR -->
+    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm mb-6 flex flex-col md:flex-row gap-4 items-center justify-between">
+      <!-- Search Input -->
+      <div class="relative w-full md:w-80">
+        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+        <input type="text" id="searchInput" oninput="renderDashboard()" placeholder="Search student name or ID..." class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+      </div>
+
+      <!-- Filters -->
+      <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
+        <!-- Filter by Team -->
+        <select id="teamFilter" onchange="renderDashboard()" class="bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="ALL">All Teams</option>
+          <option value="Lab Team">Lab Team</option>
+          <option value="Events Team">Events Team</option>
+          <option value="Social Media Team">Social Media Team</option>
+          <option value="Media & Design Team">Media & Design Team</option>
+          <option value="Outreach Team">Outreach Team</option>
+          <option value="Support Team">Support Team</option>
+        </select>
+
+        <!-- Filter by Progress Status -->
+        <select id="statusFilter" onchange="renderDashboard()" class="bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-lg py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="ALL">All Completion Status</option>
+          <option value="COMPLETED">Completed (10h+)</option>
+          <option value="IN_PROGRESS">In Progress (&lt;10h)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- STUDENT CARDS GRID -->
+    <div id="studentGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Cards rendered dynamically via JS -->
+    </div>
+
+  </main>
+
+  <!-- COORDINATING OFFICER DRAWER / MODAL -->
+  <div id="officerDrawer" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex justify-end transition-opacity">
+    <div class="bg-white w-full max-w-lg h-full shadow-2xl flex flex-col p-6 overflow-y-auto">
+      
+      <div class="flex justify-between items-center pb-4 border-b border-slate-200 mb-6">
+        <div>
+          <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+            <i class="fa-solid fa-user-gear text-blue-600"></i> Officer Management
+          </h2>
+          <p class="text-xs text-slate-500">Add student progress, log hours, & assign teams</p>
+        </div>
+        <button onclick="toggleOfficerDrawer()" class="text-slate-400 hover:text-slate-600 text-lg p-2">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Form 1: Add New Hour Log -->
+      <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 mb-6">
+        <h3 class="text-sm font-semibold text-slate-800 mb-3 flex items-center gap-2">
+          <i class="fa-solid fa-plus-circle text-blue-600"></i> Log Student Hours
+        </h3>
+        <form id="logHoursForm" onsubmit="handleLogHours(event)" class="space-y-3">
+          <div>
+            <label class="block text-xs font-medium text-slate-600 mb-1">Select Student</label>
+            <select id="logStudentSelect" required class="w-full bg-white border border-slate-200 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500">
+              <!-- Options populated by JS -->
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-slate-600 mb-1">Activity Title / Assignment</label>
+            <input type="text" id="logTitle" placeholder="e.g., Lab Duty (Morning Shift)" required class="w-full bg-white border border-slate-200 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500">
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-medium text-slate-600 mb-1">Earned Under Team</label>
+              <select id="logTeamType" required class="w-full bg-white border border-slate-200 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500">
+                <option value="Primary">Primary Team</option>
+                <option value="Secondary">Secondary Team</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-600 mb-1">Hours Earned</label>
+              <input type="number" id="logHours" min="0.5" step="0.5" max="10" placeholder="e.g., 3" required class="w-full bg-white border border-slate-200 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-slate-600 mb-1">Date Completed</label>
+            <input type="date" id="logDate" required class="w-full bg-white border border-slate-200 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500">
+          </div>
+
+          <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-2 rounded-lg text-sm font-medium transition shadow">
+            Submit Hours
+          </button>
+        </form>
+      </div>
+
+      <!-- Form 2: Register New Student -->
+      <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 mb-6">
+        <h3 class="text-sm font-semibold text-slate-800 mb-3 flex items-center gap-2">
+          <i class="fa-solid fa-user-plus text-emerald-600"></i> Register New Student
+        </h3>
+        <form id="addStudentForm" onsubmit="handleAddStudent(event)" class="space-y-3">
+          <div>
+            <label class="block text-xs font-medium text-slate-600 mb-1">Full Name</label>
+            <input type="text" id="newStudentName" placeholder="e.g., Jane Doe" required class="w-full bg-white border border-slate-200 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500">
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-slate-600 mb-1">Student ID</label>
+            <input type="text" id="newStudentID" placeholder="e.g., S113009" required class="w-full bg-white border border-slate-200 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500">
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-medium text-slate-600 mb-1">Primary Team</label>
+              <select id="newStudentPrimary" required class="w-full bg-white border border-slate-200 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500">
+                <option value="Lab Team">Lab Team</option>
+                <option value="Events Team">Events Team</option>
+                <option value="Social Media Team">Social Media Team</option>
+                <option value="Media & Design Team">Media & Design Team</option>
+                <option value="Outreach Team">Outreach Team</option>
+                <option value="Support Team">Support Team</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-600 mb-1">Secondary Team</label>
+              <select id="newStudentSecondary" required class="w-full bg-white border border-slate-200 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500">
+                <option value="Support Team">Support Team</option>
+                <option value="Lab Team">Lab Team</option>
+                <option value="Events Team">Events Team</option>
+                <option value="Social Media Team">Social Media Team</option>
+                <option value="Media & Design Team">Media & Design Team</option>
+                <option value="Outreach Team">Outreach Team</option>
+              </select>
+            </div>
+          </div>
+
+          <button type="submit" class="w-full bg-slate-800 hover:bg-slate-700 text-white py-2 rounded-lg text-sm font-medium transition">
+            Add Student
+          </button>
+        </form>
+      </div>
+
+      <!-- Reset Data Option -->
+      <div class="mt-auto pt-4 border-t border-slate-200 flex justify-between items-center">
+        <span class="text-xs text-slate-400">Data saved locally in browser</span>
+        <button onclick="resetToSampleData()" class="text-xs text-rose-500 hover:text-rose-700 underline font-medium">
+          Reset Demo Data
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="bg-white border-t border-slate-200 py-6 mt-12">
+    <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500 space-y-1">
+      <p class="font-medium text-slate-700">BAITIA Connect & Contribute Program • National Chi Nan University</p>
+      <p>10 Hours / Semester Service Requirement for Scholarship Holders</p>
+    </div>
+  </footer>
+
+  <!-- APPLICATION LOGIC (JAVASCRIPT) -->
+  <script>
+    // Initial Sample Data Structure
+    const INITIAL_STUDENTS = [
+      {
+        id: "S113001",
+        name: "Alex Lin",
+        primaryTeam: "Lab Team",
+        secondaryTeam: "Support Team",
+        logs: [
+          { id: 101, title: "Lab Duty (Morning Shift)", type: "Primary", team: "Lab Team", hours: 3, date: "2026-03-02" },
+          { id: 102, title: "Welcome Party Setup", type: "Secondary", team: "Support Team", hours: 2, date: "2026-03-10" },
+          { id: 103, title: "Lab Duty (Afternoon Shift)", type: "Primary", team: "Lab Team", hours: 3, date: "2026-03-18" },
+          { id: 104, title: "Seminar Support", type: "Secondary", team: "Support Team", hours: 2, date: "2026-03-24" }
+        ]
+      },
+      {
+        id: "S113002",
+        name: "Chen Wei-Ting",
+        primaryTeam: "Media & Design Team",
+        secondaryTeam: "Social Media Team",
+        logs: [
+          { id: 201, title: "Event Poster Graphic Design", type: "Primary", team: "Media & Design Team", hours: 4, date: "2026-03-05" },
+          { id: 202, title: "Social Media Campaign Post", type: "Secondary", team: "Social Media Team", hours: 3, date: "2026-03-12" }
+        ]
+      },
+      {
+        id: "S113003",
+        name: "Sarah Johnson",
+        primaryTeam: "Events Team",
+        secondaryTeam: "Support Team",
+        logs: [
+          { id: 301, title: "Orientation Workshop Planning", type: "Primary", team: "Events Team", hours: 4, date: "2026-03-08" },
+          { id: 302, title: "Welcome Party On-Site Execution", type: "Primary", team: "Events Team", hours: 4, date: "2026-03-15" },
+          { id: 303, title: "Post-Event Cleanup", type: "Secondary", team: "Support Team", hours: 2, date: "2026-03-15" }
+        ]
+      },
+      {
+        id: "S113004",
+        name: "David Zhang",
+        primaryTeam: "Outreach Team",
+        secondaryTeam: "Lab Team",
+        logs: [
+          { id: 401, title: "Alumni Contact Outreach", type: "Primary", team: "Outreach Team", hours: 3, date: "2026-03-11" }
+        ]
+      }
+    ];
+
+    // Load data from LocalStorage or initialize
+    let students = JSON.parse(localStorage.getItem('baitia_students')) || INITIAL_STUDENTS;
+
+    function saveState() {
+      localStorage.setItem('baitia_students', JSON.stringify(students));
+    }
+
+    function resetToSampleData() {
+      if (confirm("Reset application data back to default sample students?")) {
+        students = INITIAL_STUDENTS;
+        saveState();
+        renderDashboard();
+        populateStudentSelect();
+      }
+    }
+
+    // Render Dashboard & Cards
+    function renderDashboard() {
+      const search = document.getElementById('searchInput').value.toLowerCase();
+      const selectedTeam = document.getElementById('teamFilter').value;
+      const selectedStatus = document.getElementById('statusFilter').value;
+
+      const grid = document.getElementById('studentGrid');
+      grid.innerHTML = '';
+
+      let totalStudentsCount = students.length;
+      let goalReachedCount = 0;
+      let aggregateHours = 0;
+      let aggregateTargetHours = totalStudentsCount * 10;
+
+      // Filter logic
+      const filtered = students.filter(s => {
+        const totalHours = s.logs.reduce((sum, log) => sum + log.hours, 0);
+        
+        // Search
+        const matchesSearch = s.name.toLowerCase().includes(search) || s.id.toLowerCase().includes(search);
+        
+        // Team filter (Matches Primary OR Secondary OR Team where hours logged)
+        const matchesTeam = selectedTeam === 'ALL' || 
+          s.primaryTeam === selectedTeam || 
+          s.secondaryTeam === selectedTeam;
+
+        // Status filter
+        const matchesStatus = selectedStatus === 'ALL' || 
+          (selectedStatus === 'COMPLETED' && totalHours >= 10) ||
+          (selectedStatus === 'IN_PROGRESS' && totalHours < 10);
+
+        return matchesSearch && matchesTeam && matchesStatus;
+      });
+
+      // Calculate global metrics
+      students.forEach(s => {
+        const totalHours = s.logs.reduce((sum, log) => sum + log.hours, 0);
+        if (totalHours >= 10) goalReachedCount++;
+        aggregateHours += totalHours;
+      });
+
+      document.getElementById('statTotalStudents').innerText = totalStudentsCount;
+      document.getElementById('statGoalReached').innerText = `${goalReachedCount} / ${totalStudentsCount}`;
+      document.getElementById('statTotalHours').innerText = `${aggregateHours} / ${aggregateTargetHours} hrs`;
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full py-12 text-center text-slate-400 bg-white rounded-xl border border-slate-200">
+            <i class="fa-solid fa-folder-open text-3xl mb-2"></i>
+            <p class="text-sm">No student records found matching the active filters.</p>
+          </div>
+        `;
+        return;
+      }
+
+      // Render Each Card
+      filtered.forEach(student => {
+        const primaryHours = student.logs
+          .filter(l => l.type === 'Primary')
+          .reduce((sum, l) => sum + l.hours, 0);
+
+        const secondaryHours = student.logs
+          .filter(l => l.type === 'Secondary')
+          .reduce((sum, l) => sum + l.hours, 0);
+
+        const totalHours = primaryHours + secondaryHours;
+        const progressPct = Math.min(Math.round((totalHours / 10) * 100), 100);
+        const isComplete = totalHours >= 10;
+
+        const card = document.createElement('div');
+        card.className = "bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition flex flex-col overflow-hidden";
+
+        card.innerHTML = `
+          <div class="p-5 border-b border-slate-100 flex-grow">
+            <!-- Header: Name & Target Badge -->
+            <div class="flex justify-between items-start mb-3">
+              <div>
+                <h3 class="font-bold text-slate-900 text-base">${student.name}</h3>
+                <span class="text-xs text-slate-400 font-mono">${student.id}</span>
+              </div>
+              ${isComplete ? 
+                `<span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold flex items-center gap-1"><i class="fa-solid fa-check"></i> 10h Completed</span>` : 
+                `<span class="px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-semibold">${10 - totalHours}h Remaining</span>`
+              }
+            </div>
+
+            <!-- Teams -->
+            <div class="flex flex-wrap gap-2 mb-4">
+              <span class="text-xs px-2.5 py-1 rounded-md bg-blue-50 text-blue-700 font-medium border border-blue-100" title="Primary Team">
+                <i class="fa-solid fa-star text-blue-500 mr-1"></i> ${student.primaryTeam}
+              </span>
+              <span class="text-xs px-2.5 py-1 rounded-md bg-slate-100 text-slate-600 font-medium border border-slate-200" title="Secondary Team (Overflow Hours)">
+                <i class="fa-solid fa-rotate text-slate-400 mr-1"></i> ${student.secondaryTeam}
+              </span>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="space-y-1.5 mb-4">
+              <div class="flex justify-between text-xs font-semibold">
+                <span class="text-slate-600">Progress (${totalHours} / 10 Hours)</span>
+                <span class="${isComplete ? 'text-emerald-600' : 'text-blue-600'}">${progressPct}%</span>
+              </div>
+              <div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden flex">
+                <div style="width: ${progressPct}%" class="h-full ${isComplete ? 'bg-emerald-500' : 'bg-blue-600'} transition-all duration-500"></div>
+              </div>
+            </div>
+
+            <!-- Hours Split Breakdown -->
+            <div class="grid grid-cols-2 gap-2 text-center text-xs bg-slate-50 p-2.5 rounded-lg border border-slate-100 mb-2">
+              <div>
+                <span class="text-slate-400 block text-[10px] uppercase font-semibold">Primary Team</span>
+                <span class="font-bold text-slate-800">${primaryHours} hrs</span>
+              </div>
+              <div>
+                <span class="text-slate-400 block text-[10px] uppercase font-semibold">Secondary Team</span>
+                <span class="font-bold text-slate-800">${secondaryHours} hrs</span>
+              </div>
+            </div>
+
+            <!-- Expandable Log Accordion -->
+            <details class="group mt-3 text-xs">
+              <summary class="cursor-pointer font-medium text-blue-600 hover:text-blue-800 flex items-center justify-between py-1">
+                <span>View Activity Logs (${student.logs.length})</span>
+                <i class="fa-solid fa-chevron-down transition-transform group-open:rotate-180"></i>
+              </summary>
+              <div class="mt-2 pt-2 border-t border-slate-100 space-y-2 max-h-40 overflow-y-auto pr-1">
+                ${student.logs.length === 0 ? '<p class="text-slate-400 italic">No hours logged yet.</p>' : ''}
+                ${student.logs.map(log => `
+                  <div class="flex justify-between items-start bg-slate-50 p-2 rounded border border-slate-100">
+                    <div>
+                      <p class="font-semibold text-slate-800">${log.title}</p>
+                      <span class="text-[10px] text-slate-400">${log.date} • ${log.team} (${log.type})</span>
+                    </div>
+                    <span class="font-bold text-slate-700 bg-white px-2 py-0.5 rounded border border-slate-200">+${log.hours}h</span>
+                  </div>
+                `).join('')}
+              </div>
+            </details>
+
+          </div>
+        `;
+
+        grid.appendChild(card);
+      });
+    }
+
+    // Toggle Officer Management Drawer
+    function toggleOfficerDrawer() {
+      const drawer = document.getElementById('officerDrawer');
+      drawer.classList.toggle('hidden');
+      if (!drawer.classList.contains('hidden')) {
+        populateStudentSelect();
+        // Set default date to today
+        document.getElementById('logDate').value = new Date().toISOString().split('T')[0];
+      }
+    }
+
+    // Populate dropdown in officer modal
+    function populateStudentSelect() {
+      const select = document.getElementById('logStudentSelect');
+      select.innerHTML = '';
+      students.forEach(s => {
+        const option = document.createElement('option');
+        option.value = s.id;
+        option.innerText = `${s.name} (${s.id}) - [${s.primaryTeam}]`;
+        select.appendChild(option);
+      });
+    }
+
+    // Handle Logging Hours Form Submission
+    function handleLogHours(e) {
+      e.preventDefault();
+      const studentId = document.getElementById('logStudentSelect').value;
+      const title = document.getElementById('logTitle').value;
+      const type = document.getElementById('logTeamType').value;
+      const hours = parseFloat(document.getElementById('logHours').value);
+      const date = document.getElementById('logDate').value;
+
+      const student = students.find(s => s.id === studentId);
+      if (student) {
+        const targetTeam = type === 'Primary' ? student.primaryTeam : student.secondaryTeam;
+        
+        student.logs.push({
+          id: Date.now(),
+          title: title,
+          type: type,
+          team: targetTeam,
+          hours: hours,
+          date: date
+        });
+
+        saveState();
+        renderDashboard();
+        alert(`Successfully logged ${hours} hour(s) for ${student.name}!`);
+        document.getElementById('logHoursForm').reset();
+        document.getElementById('logDate').value = new Date().toISOString().split('T')[0];
+      }
+    }
+
+    // Handle Adding New Student Form Submission
+    function handleAddStudent(e) {
+      e.preventDefault();
+      const name = document.getElementById('newStudentName').value;
+      const id = document.getElementById('newStudentID').value;
+      const primary = document.getElementById('newStudentPrimary').value;
+      const secondary = document.getElementById('newStudentSecondary').value;
+
+      if (students.some(s => s.id === id)) {
+        alert("A student with this ID already exists!");
+        return;
+      }
+
+      students.push({
+        id: id,
+        name: name,
+        primaryTeam: primary,
+        secondaryTeam: secondary,
+        logs: []
+      });
+
+      saveState();
+      renderDashboard();
+      populateStudentSelect();
+      alert(`Student ${name} registered successfully!`);
+      document.getElementById('addStudentForm').reset();
+    }
+
+    // Initial Setup
+    document.addEventListener('DOMContentLoaded', () => {
+      renderDashboard();
+    });
+  </script>
+</body>
+</html>
